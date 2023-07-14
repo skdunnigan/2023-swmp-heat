@@ -1,0 +1,57 @@
+---
+title: "It's hot out there"
+author: "S Dunnigan"
+format: html
+execute:
+  warning: false
+  error: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(here)
+
+source(here('R', '00_loadpkgs.R'))
+```
+
+```{r}
+#| label: load-data
+#| include: false
+
+load(here('output','data', 'rkb.Rdata'))
+
+```
+
+```{r}
+#| label: jays-graph
+#| echo: false
+
+rkb %>%
+  filter(prcp_in > 0) %>% 
+  ggplot(aes(x = atemp_f, y = dew_pt_f)) +
+  geom_point(aes(size = prcp_in, color = year >= 2023), alpha = 0.5) +
+  scale_size(range = c(1, 24), name="Total Precipitation (in)") +
+  geom_text(aes(label = year), size = 4) +
+  facet_wrap(~month, ncol = 1) +
+  scale_color_manual(values = c("gray", "red")) +
+  theme_classic() +
+  labs(x = "Average Air Temperature (F)",
+       y = "Average Dew Point (F)") +
+  guides(color = "none")
+
+rkb %>%
+  filter(prcp_in > 0) %>% 
+  mutate(year = as.character(year)) %>% 
+  ggplot(aes(x = atemp_f, y = dew_pt_f)) +
+  geom_point(aes(size = prcp_in, color = year), alpha = 0.5) +
+  scale_size(range = c(1, 24), name="Total Precipitation (in)") +
+  geom_text(aes(label = year), size = 4) +
+  facet_wrap(~month, ncol = 1) +
+  theme_classic() +
+  labs(x = "Average Air Temperature (F)",
+       y = "Average Dew Point (F)") +
+  guides(color = "none")
+```
